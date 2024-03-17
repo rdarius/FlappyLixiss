@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FlappyLixiss</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        background: black;
+        overflow: hidden;
+      }
+      #game {
+        position: fixed;
+        top: 50vh;
+        left: 50vw;
+        transform: translate(-50%, -50%);
+        height: 100vh;
+        aspect-ratio: 9/16;
+        background: purple;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="game" width="288" height="512"></canvas>
+    <script>
+      (() => {
+        const canvas = document.getElementById("game");
+        const context = canvas.getContext("2d");
+        const background = document.createElement("img");
+        background.src = "background-day.png";
+        const pipeTop = document.createElement("img");
+        pipeTop.src = "pipe-green-top.png";
+        const pipeBottom = document.createElement("img");
+        pipeBottom.src = "pipe-green-bottom.png";
+        let deltaTime = 0;
+        let lastTick = Date.now();
+
+        // canvas.height = window.innerHeight;
+        // canvas.width = Math.floor((window.innerHeight / 16) * 9);
+
+        let pipeX = canvas.width;
+        let pipeY = canvas.height / 2;
+
+        const draw = () => {
+          const currentTick = Date.now();
+          deltaTime = currentTick - lastTick;
+          lastTick = currentTick;
+
+          pipeX -= deltaTime / 3;
+
+          if (pipeX < -pipeTop.width) {
+            pipeX = canvas.width;
+            pipeY = Math.floor((Math.random() - 0.5) * 200 + canvas.height / 2);
+          }
+
+          context.clearRect(0, 0, canvas.width, canvas.height);
+
+          context.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+          context.drawImage(pipeTop, pipeX, pipeY - pipeTop.height - 50);
+          context.drawImage(pipeBottom, pipeX, pipeY + 50);
+
+          context.strokeStyle = "orange";
+          context.beginPath();
+          context.rect(
+            Math.floor(Math.random() * 100),
+            Math.floor(Math.random() * 100),
+            150,
+            100
+          );
+          context.stroke();
+
+          requestAnimationFrame(draw);
+        };
+        draw();
+      })();
+    </script>
+  </body>
+</html>
